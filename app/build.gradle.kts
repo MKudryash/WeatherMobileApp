@@ -6,7 +6,8 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android") version "2.48"
 }
-
+val API_KEY by extra("a398a4653b0b45b496975613240811")
+val URL_WEATHER by extra("http://api.weatherapi.com/v1/")
 android {
     namespace = "com.example.weathermobileapp"
     compileSdk = 34
@@ -22,6 +23,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "API_KEY", "\"${project.properties["API_KEY"]}\"")
+        buildConfigField("String", "URL_WEATHER", "\"${project.properties["URL_WEATHER"]}\"")
     }
 
     buildTypes {
@@ -42,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

@@ -1,15 +1,21 @@
 package com.example.weathermobileapp.Presentation
 
+import android.content.Context
 import com.example.weatherappmobile.Data.api.WeatherApiService
 import com.example.weathermobileapp.BuildConfig
+import com.example.weathermobileapp.Data.InternetRepositoryImpl
 import com.example.weathermobileapp.Data.api.WeatherApiInterceptor
 import com.example.weathermobileapp.Data.dataSource.RemoteWeatherDataSource
 import com.example.weathermobileapp.Data.interfaceData.WeatherRepositoryInterface
+import com.example.weathermobileapp.Data.repository.InternetRepository
 import com.example.weathermobileapp.Data.repository.WeatherRepository
 import com.example.weathermobileapp.Domain.useCase.GetCurrentWeatherUseCase
+import com.example.weathermobileapp.Domain.useCase.IsInternetAvailableUseCase
+import com.example.weathermobileapp.Domain.useCase.IsInternetAvailableUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -74,6 +80,23 @@ object AppModule {
     @Singleton
     fun provideGetCurrentWeatherUseCase(weatherRepository: WeatherRepositoryInterface): GetCurrentWeatherUseCase {
         return GetCurrentWeatherUseCase(weatherRepository)
+    }
+    /**
+     * Создает объект InternetRepositoryImpl, который отвечает за получений сведений о сотоянии интрнета
+     * */
+    @Provides
+    @Singleton
+    fun provideInternetRepository(@ApplicationContext context: Context): InternetRepository {
+        return  InternetRepositoryImpl(context)
+    }
+    /**
+     * Создает объект IsInternetAvailableUseCaseImpl, который представляет собой use-case для получения состояния интернета
+     * */
+
+    @Provides
+    @Singleton
+    fun provideIsInternetAvailableUseCase(internetRepository: InternetRepository): IsInternetAvailableUseCase {
+        return  IsInternetAvailableUseCaseImpl(internetRepository)
     }
 
 }

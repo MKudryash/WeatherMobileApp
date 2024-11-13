@@ -36,6 +36,7 @@ import com.example.weathermobileapp.Presentation.components.CurrentWeatherSectio
 import com.example.weathermobileapp.Presentation.components.CustomSearchView
 import com.example.weathermobileapp.Presentation.components.DailyWeatherColumn
 import com.example.weathermobileapp.Presentation.components.TimeWeatherRow
+import com.example.weathermobileapp.R
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -49,6 +50,7 @@ fun SearchWeatherScreen(
 
     val weatherStateSearch by viewModel.weatherStateSearch.collectAsState()
 
+    val internetStatus by viewModel.internetStatus.collectAsState()
 
     Scaffold { innerPadding ->
         LazyColumn(
@@ -65,12 +67,10 @@ fun SearchWeatherScreen(
                     viewModel.searchCity(search)
                 })
                 when (search) {
-                    "" -> Text(
-                        "Choose a city", fontSize = 22.sp,
+                    "" -> Text("Choose a city",fontSize = 22.sp,
                         textAlign = TextAlign.Center
                     )
-
-                    else ->
+                    else -> if (internetStatus) {
                         when (weatherStateSearch) {
                             is WeatherState.Loading -> Column(
                                 modifier = Modifier
@@ -93,17 +93,38 @@ fun SearchWeatherScreen(
                                 /* OtherData((weatherStateSearch as WeatherState.Success).weatherData )*/ // Вывод дополнительной информации (просто не вписывается по дизайну)
                                 DailyWeatherColumn((weatherStateSearch as WeatherState.Success).weatherData)//Список из прогноза
                             }
-
-                            is WeatherState.Error -> Text(
-                                "Choose a city", fontSize = 22.sp,
+                            is WeatherState.Error -> Text("Choose a city",fontSize = 22.sp,
                                 textAlign = TextAlign.Center
                             )
 
                         }
-
+                    }
+                    else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 100.dp, horizontal = 20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.disconnected),
+                                contentDescription = "null",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(horizontal = 1.dp),
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                            Text(
+                                "Check your internet connection and restart the application",
+                                fontSize = 22.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
-
             }
+
         }
     }
 }

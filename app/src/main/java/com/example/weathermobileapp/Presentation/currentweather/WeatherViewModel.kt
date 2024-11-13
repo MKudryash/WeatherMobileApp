@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.weathermobileapp.Domain.WeatherState
 import com.example.weathermobileapp.Domain.models.WeatherModel
 import com.example.weathermobileapp.Domain.useCase.GetCurrentWeatherUseCase
+import com.example.weathermobileapp.Domain.useCase.IsInternetAvailableUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,26 +24,34 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase
 ) : ViewModel() {
 
+    // Состояние ответа от api
     private val _weatherState = MutableStateFlow<WeatherState>(WeatherState.Loading)
     val weatherState: StateFlow<WeatherState> = _weatherState.asStateFlow()
-
-    private val _weatherStateSearch = MutableStateFlow<WeatherState>(WeatherState.Loading)
-    val weatherStateSearch: StateFlow<WeatherState> = _weatherStateSearch.asStateFlow()
-
+   // Поиск конкретного города (по умолчанию london)
     private val _selectedCity = MutableStateFlow("London")
     val selectedCity: StateFlow<String> = _selectedCity.asStateFlow()
+
+    // Для получения геолокации пользователя
     private lateinit var locationManager: LocationManager
     private val location = mutableStateOf<Location?>(null)
 
+    //Кэширование данных
     private var cachedWeatherData: WeatherModel? = null
+
+    //Проверка интернета
+    private val _internetStatus = MutableStateFlow(false)
+    val internetStatus: StateFlow<Boolean> = _internetStatus
 
 
     init {
         fetchWeatherData(selectedCity.value)
-
+        viewModelScope.launch {
+            _internetStatus.value = isInternetAvailableUseCase.execute()
+        }
     }
     @SuppressLint("MissingPermission")
     fun getLocation(context: Context) {

@@ -1,7 +1,7 @@
 package com.example.weathermobileapp.Data.repository
 
 import com.example.weatherappmobile.Data.api.WeatherApiService
-import com.example.weathermobileapp.Data.repositoryInterface.WeatherRepositoryInterface
+import com.example.weathermobileapp.Data.interfaceData.WeatherRepositoryInterface
 import com.example.weathermobileapp.Domain.models.WeatherModel
 import javax.inject.Inject
 

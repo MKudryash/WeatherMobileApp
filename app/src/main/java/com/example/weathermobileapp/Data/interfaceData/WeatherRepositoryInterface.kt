@@ -1,4 +1,4 @@
-package com.example.weathermobileapp.Data.repositoryInterface
+package com.example.weathermobileapp.Data.interfaceData
 
 import com.example.weathermobileapp.Domain.models.WeatherModel
 

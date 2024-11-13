@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android") version "2.48"
 }
 
 android {
@@ -66,4 +70,36 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+
+    //Json, Okttp, Interceptor
+
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+
+    //ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    //DaggerHilt
+    implementation(libs.hilt.android)
+    implementation (libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.android.compiler)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Location
+    implementation (libs.play.services.location)
+    implementation (libs.androidx.activity.compose.v131)
+
+    //Icons
+    implementation (libs.androidx.material.icons.core)
+    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.coil.compose)
 }

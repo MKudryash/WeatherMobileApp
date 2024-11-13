@@ -42,7 +42,10 @@ fun WeatherScreen(viewModel: WeatherViewModel = hiltViewModel(), navController: 
 
     val context = LocalContext.current
 
-
+    // Получить геолокацию в viewModel
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getLocation(context)
+    }
     Scaffold { innerPadding ->
         LazyColumn(
             modifier = Modifier

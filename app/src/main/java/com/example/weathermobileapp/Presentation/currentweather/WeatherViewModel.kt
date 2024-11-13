@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
@@ -41,9 +42,45 @@ class WeatherViewModel @Inject constructor(
 
     init {
         fetchWeatherData(selectedCity.value)
+
     }
+    @SuppressLint("MissingPermission")
+    fun getLocation(context: Context) {
+        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-
+        viewModelScope.launch {
+            if (hasLocationPermission(context)) {
+                val lastKnownLocation =
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                if (lastKnownLocation != null) {
+                    location.value = lastKnownLocation
+                    // Установите текущую геолокацию в selectedCity
+                    _selectedCity.value =
+                        "${lastKnownLocation.latitude}, ${lastKnownLocation.longitude}"
+                    fetchWeatherData("${lastKnownLocation.latitude}, ${lastKnownLocation.longitude}")
+                } else {
+                    // Зарегистрировать слушателя для получения обновлений о местоположении
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        10000L, // 10 секунд
+                        10f, // 10 метров
+                        LocationListener {
+                            location.value = it
+                            // Обновите selectedCity с новыми координатами
+                            _selectedCity.value = "${it.latitude}, ${it.longitude}"
+                            fetchWeatherData("${it.latitude}, ${it.longitude}")
+                        }
+                    )
+                }
+            }
+        }
+    }
+    private fun hasLocationPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
     private fun fetchWeatherData(city: String) {
         cachedWeatherData?.let {
             _weatherState.value = WeatherState.Success(it)

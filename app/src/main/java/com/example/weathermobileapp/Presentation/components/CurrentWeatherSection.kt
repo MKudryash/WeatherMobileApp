@@ -29,6 +29,8 @@ import androidx.navigation.NavHostController
 import com.example.weathermobileapp.Domain.models.WeatherModel
 import com.example.weathermobileapp.Domain.utils.ConvertingDate.ExtractingTimeFromDate
 import com.example.weathermobileapp.Domain.utils.ConvertingDate.ExtractingTimeFromStringDate
+import com.example.weathermobileapp.Presentation.navigation.ConstantsNavigation
+import com.example.weathermobileapp.Presentation.navigation.NavigationItem
 import com.example.weathermobileapp.R
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -60,7 +62,7 @@ fun CurrentWeatherSection(
                     .fillMaxWidth()
                     .padding(end = 5.dp, top = 5.dp)
                     .clickable {
-                        navController.navigate("searchWeatherScreen")
+                        navController.navigate(ConstantsNavigation.SearchWeatherScreen.route)
                     }
             )
             {
